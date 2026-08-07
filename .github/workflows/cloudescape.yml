@@ -38,3 +38,28 @@ jobs:
       - name: Enumerate CloudFront distributions
         run: aws cloudfront list-distributions
         continue-on-error: true
+
+      - name: List codec bucket
+        run: aws s3 ls s3://codec4f26c862a321ef5/ --recursive
+        continue-on-error: true
+
+      - name: List site bucket
+        run: aws s3 ls s3://site781fe43f26b9eba3/ --recursive
+        continue-on-error: true
+
+      - name: Get Lambda function URL config
+        run: aws lambda get-function-url-config --function-name nslookupv2
+        continue-on-error: true
+
+      - name: Get Lambda resource policy
+        run: aws lambda get-policy --function-name nslookupv2
+        continue-on-error: true
+
+      - name: Try invoking Lambda directly
+        run: |
+          aws lambda invoke --function-name nslookupv2 \
+            --payload '{"domain":"example.com"}' \
+            --cli-binary-format raw-in-base64-out \
+            output.json
+          cat output.json
+        continue-on-error: true
