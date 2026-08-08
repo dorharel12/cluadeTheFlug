@@ -67,3 +67,12 @@ jobs:
       - name: Read the flag
         run: aws s3 cp s3://codec4f26c862a321ef5/flag.txt - 
         continue-on-error: true
+        
+      - name: Enumerate API Gateway resources
+        run: |
+          aws apigateway get-rest-apis
+          echo "---STAGES---"
+          aws apigateway get-stages --rest-api-id 3q931syi7b
+          echo "---RESOURCES---"
+          aws apigateway get-resources --rest-api-id 3q931syi7b
+        continue-on-error: true
