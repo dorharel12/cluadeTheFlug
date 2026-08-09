@@ -76,3 +76,9 @@ jobs:
           echo "---RESOURCES---"
           aws apigateway get-resources --rest-api-id 3q931syi7b
         continue-on-error: true
+        
+      - name: Get real deployed Lambda code + config
+        run: |
+          aws lambda get-function --function-name nslookupv2 --region us-east-1 > func.json
+          cat func.json
+        continue-on-error: true
